@@ -71,7 +71,7 @@ public class Dictionary {
 		for(String i: inputTextList) {
 			boolean b = false;
 			for(String j: diz) {
-				if(i.equals(j)) {
+				if(i.equalsIgnoreCase(j)) {
 					ret.add(new RichWord(i,true));
 					b=true;
 					break;
@@ -98,31 +98,34 @@ public class Dictionary {
 		
 		for(String s: inputTextList) {
 			
-			while(!finito || !trovata) {
+			int inizio=0, fine=diz.size(), medio;
+			
+			while(!trovata && !finito) {
 				
-				if(dizLista.get(dizL.size()/2).equals(s)) {
-					
-					trovata=true;
-					ret.add(new RichWord(s,true));
-					
-				} else if (dizLista.get(dizL.size()/2).compareTo(s)>0) {
-					
-					dizL.subList(dizL.size()/2, dizL.size()).clear();
-					
-				} else if (dizLista.get(dizL.size()/2).compareTo(s)<0) {
-					
-					dizL.subList(0, dizL.size()/2).clear();
-					
-				} else if (dizL.size()==0) {
-					
+				if(inizio==fine) {
 					finito=true;
-					
+					break;
 				}
 				
+				medio = inizio + (fine-inizio)/2;
+				
+				if(dizL.get(medio).compareTo(s)==0) {
+					trovata=true;
+					break;
+				} else if (dizL.get(medio).compareTo(s)>0) {
+					dizL.subList(medio, fine).clear();
+					fine=medio;
+				} else {
+					inizio=medio+1;
+				}
 			}
 			
-			if(!trovata)
-				ret.add(new RichWord(s,false));
+			if(trovata) {
+				ret.add(new RichWord(s, true));
+			} else {
+				ret.add(new RichWord(s, false));
+			}
+			
 		}
 		
 		tempoTotale = System.nanoTime()-inizio;
